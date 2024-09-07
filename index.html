@@ -8,14 +8,17 @@
         * {
             margin: 0;
             padding: 0;
+            
             box-sizing: border-box;
         }
         body {
             height: 100vh;
-            
+
             background-color: hsl(0, 0%, 10%);
+
+            overflow: hidden;
         }
-        
+
         #container {
             width: 100%;
             height: 50%;
@@ -24,12 +27,20 @@
             justify-content: center;
             align-items: center;
         }
+
         #prbm_h1 {
-            margin-right: 2rem;
+            width: 50dvw;
+
+            transform: translate(10%, 0%);
+
+            margin-right: 1rem;
 
             font-size: 40dvw;
             color: white;
+
+            filter: drop-shadow(0 0 0.5rem hsl(0, 0%, 10%));
         }
+
         #inputField {
             width: 30dvw;
             height: 30dvw;
@@ -46,9 +57,28 @@
             background-color: hsl(0, 0%, 20%);
             border: none;
             border-radius: 0.5rem;
+
+            filter: drop-shadow(0 0 0.5rem hsl(0, 0%, 10%));
         }
+
         #inputField:focus {
             outline: none;
+        }
+
+        #feedback {
+            position: absolute;
+
+            width: 100%;
+            height: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 100dvw;
+
+            opacity: 0;
+            z-index: -1;
         }
     </style>
 </head>
@@ -57,10 +87,13 @@
         <h1 id="prbm_h1"></h1>
         <input type="text" id="inputField" placeholder="?" />
     </div>
+    <h1 id="feedback" class="backText"></h1>
 
     <script>
+        const container = document.getElementById('container');
         const inputField = document.getElementById('inputField');
         const prbm_h1 = document.getElementById('prbm_h1');
+        const feedback = document.getElementById('feedback');
 
         const prbm_katakana = [
             'ア', 'イ', 'ウ', 'エ', 'オ', // 아행
@@ -73,8 +106,9 @@
             'ヤ', 'ユ', 'ヨ', // 야행
             'ラ', 'リ', 'ル', 'レ', 'ロ', // 라행
             'ワ', 'ヲ', // 와행
-            'ン' // ん (발음기호)
+            'ン' // ん
         ];
+
         const answer = [
             '아', '이', '우', '에', '오', // 아행
             '카', '키', '쿠', '케', '코', // 카행
@@ -86,8 +120,9 @@
             '야', '유', '요', // 야행
             '라', '리', '루', '레', '로', // 라행
             '와', '오', // 와행
-            'ㄴ' // ん (발음기호)
-        ]
+            'ㄴ' // ん
+        ];
+
         let prbm_index = 0;
 
         window.onload = function() {
@@ -96,30 +131,79 @@
         }
 
         inputField.addEventListener('input', function() {
+            inputField.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                inputField.style.transform = 'scale(1)';
+            }, 100);
             if (inputField.value.length > 1) {
                 checkAnswer();
             }
         });
+
         inputField.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 checkAnswer();
             }
         });
-        function checkAnswer() {
-            if (inputField.value[0] === answer[prbm_index]) {
-                // 정답일 경우
-                prbm_index = Math.floor(Math.random() * prbm_katakana.length); // 다시 숫자 뽑고
-                prbm_h1.textContent = prbm_katakana[prbm_index]; // 보여주기
 
-                // 초기화
-                inputField.value = '';
-                inputField.focus();
-            } else {
-                // 오답일 경우
-                // 초기화
-                inputField.value = '';
-                inputField.focus();
+        function checkAnswer() {
+            let isCorrect = inputField.value[0] === answer[prbm_index];
+            showFeedback(isCorrect);
+            if (isCorrect) {
+                prbm_index = Math.floor(Math.random() * prbm_katakana.length);
+                prbm_h1.animate([
+                    { scale: "3", filter: 'blur(10px)' },
+                    { scale: "1", filter: 'blur(0)' }
+                ], { duration: 100 });
+
+                prbm_h1.textContent = prbm_katakana[prbm_index];
             }
+            inputField.value = '';
+            inputField.focus();
+        }
+
+        function showFeedback(isCorrect) {
+            if (isCorrect) {
+                container.animate([
+                    { transform: 'translate(-5px, -5px)' },
+                    { transform: 'translate(5px, 5px)' },
+                    { transform: 'translate(-5px, 5px)' },
+                    { transform: 'translate(5px, -5px)' },
+                    { transform: 'translate(0, 0)' }
+                ], { duration: 100 });
+            } else {
+                container.animate([
+                    { transform: 'translate(-25px, -25px)' },
+                    { transform: 'translate(25px, 25px)' },
+                    { transform: 'translate(-25px, 25px)' },
+                    { transform: 'translate(25px, -25px)' },
+                    { transform: 'translate(0, 0)' }
+                ], { duration: 100 });
+            }
+
+            const feedbackClone = feedback.cloneNode(true);
+
+            feedbackClone.textContent = isCorrect ? 'O' : 'X';
+            feedbackClone.style.color = isCorrect ? 'hsl(120, 100%, 30%)' : 'hsl(0, 100%, 30%)';
+            feedbackClone.style.opacity = '1';
+            feedbackClone.style.left = `${Math.random() * 20 - 10}vw`;
+            document.body.appendChild(feedbackClone);
+
+            feedbackClone.animate([
+                { top: '50%', filter: 'blur(100px)', easing: 'cubic-bezier(0.16, 1, 0.3, 1)' },
+                { top: '0%', filter: 'blur(10px)' }
+            ], { duration: 500, fill: 'forwards' });
+
+            setTimeout(() => {
+                feedbackClone.animate([
+                    { top: '0%', filter: 'blur(10px)', easing: 'cubic-bezier(0.7, 0, 0.84, 0)' },
+                    { top: '-50%', filter: 'blur(100px)' }
+                ], { duration: 500, fill: 'forwards' });
+            }, 500);
+
+            setTimeout(() => {
+                feedbackClone.remove();
+            }, 1000);
         }
     </script>
 </body>
