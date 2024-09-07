@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Submit Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            height: 100vh;
+            
+            background-color: hsl(0, 0%, 10%);
+        }
+        
+        #container {
+            width: 100%;
+            height: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #prbm_h1 {
+            margin-right: 2rem;
+
+            font-size: 40dvw;
+            color: white;
+        }
+        #inputField {
+            width: 30dvw;
+            height: 30dvw;
+
+            margin-top: 1rem;
+            padding: 0.5rem;
+
+            font-size: 20dvw;
+            color: white;
+            text-align: center;
+
+            background-color: hsl(0, 0%, 20%);
+            border: none;
+            border-radius: 0.5rem;
+        }
+        #inputField:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1 id="prbm_h1"></h1>
+        <input type="text" id="inputField" placeholder="?" />
+    </div>
+
+    <script>
+        const inputField = document.getElementById('inputField');
+        const prbm_h1 = document.getElementById('prbm_h1');
+
+        const prbm_katakana = [
+            'ア', 'イ', 'ウ', 'エ', 'オ', // 아행
+            'カ', 'キ', 'ク', 'ケ', 'コ', // 카행
+            'サ', 'シ', 'ス', 'セ', 'ソ', // 사행
+            'タ', 'チ', 'ツ', 'テ', 'ト', // 타행
+            'ナ', 'ニ', 'ヌ', 'ネ', 'ノ', // 나행
+            'ハ', 'ヒ', 'フ', 'ヘ', 'ホ', // 하행
+            'マ', 'ミ', 'ム', 'メ', 'モ', // 마행
+            'ヤ', 'ユ', 'ヨ', // 야행
+            'ラ', 'リ', 'ル', 'レ', 'ロ', // 라행
+            'ワ', 'ヲ', // 와행
+            'ン' // ん (발음기호)
+        ];
+        const answer = [
+            '아', '이', '우', '에', '오', // 아행
+            '카', '키', '쿠', '케', '코', // 카행
+            '사', '시', '스', '세', '소', // 사행
+            '타', '치', '츠', '테', '토', // 타행
+            '나', '니', '누', '네', '노', // 나행
+            '하', '히', '후', '헤', '호', // 하행
+            '마', '미', '무', '메', '모', // 마행
+            '야', '유', '요', // 야행
+            '라', '리', '루', '레', '로', // 라행
+            '와', '오', // 와행
+            'ㄴ' // ん (발음기호)
+        ]
+        let prbm_index = 0;
+
+        window.onload = function() {
+            prbm_index = Math.floor(Math.random() * prbm_katakana.length);
+            prbm_h1.textContent = prbm_katakana[prbm_index];
+        }
+
+        inputField.addEventListener('input', function() {
+            if (inputField.value.length > 1) {
+                checkAnswer();
+            }
+        });
+        inputField.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+        function checkAnswer() {
+            if (inputField.value[0] === answer[prbm_index]) {
+                // 정답일 경우
+                prbm_index = Math.floor(Math.random() * prbm_katakana.length); // 다시 숫자 뽑고
+                prbm_h1.textContent = prbm_katakana[prbm_index]; // 보여주기
+
+                // 초기화
+                inputField.value = '';
+                inputField.focus();
+            } else {
+                // 오답일 경우
+                // 초기화
+                inputField.value = '';
+                inputField.focus();
+            }
+        }
+    </script>
+</body>
+</html>
