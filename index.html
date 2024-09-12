@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Submit Example</title>
+    <title>가타카나 연습기</title>
     <style>
         * {
             margin: 0;
@@ -40,6 +40,14 @@
 
             filter: drop-shadow(0 0 0.5rem hsl(0, 0%, 10%));
         }
+        /* @media not (pointer: coarse) {
+            #container {
+                height: 100%;
+            }
+            #prbm_h1 {
+                font-size: 40dvw;
+            }
+        } */
 
         #inputField {
             width: 30dvw;
@@ -184,19 +192,19 @@
             const feedbackClone = feedback.cloneNode(true);
 
             feedbackClone.textContent = isCorrect ? 'O' : 'X';
-            feedbackClone.style.color = isCorrect ? 'hsl(120, 100%, 30%)' : 'hsl(0, 100%, 30%)';
+            feedbackClone.style.color = isCorrect ? 'hsl(120, 100%, 50%)' : 'hsl(0, 100%, 50%)';
             feedbackClone.style.opacity = '1';
             feedbackClone.style.left = `${Math.random() * 20 - 10}vw`;
             document.body.appendChild(feedbackClone);
 
             feedbackClone.animate([
                 { top: '50%', filter: 'blur(100px)', easing: 'cubic-bezier(0.16, 1, 0.3, 1)' },
-                { top: '0%', filter: 'blur(10px)' }
+                { top: '0%', filter: 'blur(5px)' }
             ], { duration: 500, fill: 'forwards' });
 
             setTimeout(() => {
                 feedbackClone.animate([
-                    { top: '0%', filter: 'blur(10px)', easing: 'cubic-bezier(0.7, 0, 0.84, 0)' },
+                    { top: '0%', filter: 'blur(5px)', easing: 'cubic-bezier(0.7, 0, 0.84, 0)' },
                     { top: '-50%', filter: 'blur(100px)' }
                 ], { duration: 500, fill: 'forwards' });
             }, 500);
